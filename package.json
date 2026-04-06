@@ -1,0 +1,26 @@
+{
+  "name": "the-horizon-institute",
+  "version": "1.0.0",
+  "description": "Enterprise Management System for THE HORIZON INSTITUTE & SOFTWARE HOUSE",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build --win"
+  },
+  "author": "Antigravity",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.horizon.institute",
+    "productName": "THE HORIZON INSTITUTE",
+    "win": {
+      "target": "nsis"
+    },
+    "directories": {
+      "output": "dist"
+    }
+  }
+}
