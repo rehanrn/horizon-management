@@ -52,16 +52,17 @@ window.renderDashboard = function() {
         </div>
         
         <!-- NEW QUICK ACTIONS PANEL -->
-        <div style="background: var(--bg-surface-solid); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 28px; margin-bottom: 32px; display:flex; align-items:center; justify-content:space-between; box-shadow: var(--shadow-sm);">
-            <div style="display:flex; align-items:center; gap: 24px;">
+        <div style="background: var(--bg-surface-solid); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 32px; display:flex; flex-wrap: wrap; align-items:center; gap: 20px; box-shadow: var(--shadow-sm);">
+            <div style="display:flex; align-items:center; gap: 16px; min-width: 150px;">
                 <h3 style="font-size: 14px; color: var(--text-muted); font-weight: 700; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:8px;"><i class="ph ph-lightning" style="color:var(--warning); font-size:18px;"></i> Quick Actions</h3>
-                <div style="height: 24px; width: 2px; background: var(--border);"></div>
-                <div style="display:flex; gap: 14px;">
-                    <button class="btn btn-primary" onclick="openStudentModal()" style="box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25); border-radius: var(--radius-full); padding: 10px 24px;"><i class="ph ph-user-plus" style="font-size: 18px;"></i> Register Student</button>
-                    <button class="btn btn-secondary" onclick="openFeeModal()" style="border-radius: var(--radius-full); padding: 10px 24px; border-color: rgba(16, 185, 129, 0.3); background: var(--success-bg); color: var(--success);"><i class="ph ph-wallet" style="font-size: 18px;"></i> Collect Payment</button>
-                    <button class="btn btn-secondary" onclick="openModal('course-modal')" style="border-radius: var(--radius-full); padding: 10px 24px;"><i class="ph ph-notebook" style="font-size: 18px; color: var(--primary)"></i> Create Course</button>
-                </div>
+                <div style="height: 24px; width: 2px; background: var(--border);" class="hide-mobile"></div>
             </div>
+            <div style="display:flex; flex-wrap: wrap; gap: 12px; flex: 1;">
+                <button class="btn btn-primary" onclick="openStudentModal()" style="box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25); border-radius: var(--radius-full); padding: 10px 20px; flex: 1; min-width: 160px; justify-content: center;"><i class="ph ph-user-plus" style="font-size: 18px;"></i> Register Student</button>
+                <button class="btn btn-secondary" onclick="openFeeModal()" style="border-radius: var(--radius-full); padding: 10px 20px; border-color: rgba(16, 185, 129, 0.3); background: var(--success-bg); color: var(--success); flex: 1; min-width: 160px; justify-content: center;"><i class="ph ph-wallet" style="font-size: 18px;"></i> Collect Payment</button>
+                <button class="btn btn-secondary" onclick="openModal('course-modal')" style="border-radius: var(--radius-full); padding: 10px 20px; flex: 1; min-width: 160px; justify-content: center;"><i class="ph ph-notebook" style="font-size: 18px; color: var(--primary)"></i> Create Course</button>
+            </div>
+        </div>
         </div>
 
         <div class="dashboard-grid">

@@ -630,6 +630,10 @@ html.is-authenticated .login-screen { display: none; }
         padding: 40px 24px;
         margin: 16px;
     }
+    
+    .hide-mobile {
+        display: none !important;
+    }
 }
 
 @media (max-width: 480px) {
