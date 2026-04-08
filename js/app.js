@@ -132,21 +132,21 @@ function injectModals() {
                     <form id="student-form">
                         <input type="hidden" id="student-id">
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                            <div class="form-group" style="grid-column: 1 / -1;"><label>Full Name</label><input type="text" id="student-name" required></div>
+                        <div class="form-grid two-cols">
+                            <div class="form-group full-width"><label>Full Name</label><input type="text" id="student-name" required></div>
                             <div class="form-group"><label>Date of Birth</label><input type="date" id="student-dob" required></div>
                             <div class="form-group"><label>Gender</label><select id="student-gender" required><option>Male</option><option>Female</option><option>Other</option></select></div>
                             <div class="form-group"><label>CNIC Number</label><input type="text" id="student-cnic" placeholder="xxxxx-xxxxxxx-x"></div>
                             <div class="form-group"><label>Personal Phone</label><input type="text" id="student-phone" placeholder="03xx-xxxxxxx" required></div>
                             <div class="form-group"><label>Course Enrolled</label><select id="student-course" required></select></div>
-                            <div class="form-group" style="grid-column: 1 / -1;"><label>Residential Address</label><textarea id="student-address" rows="2" required></textarea></div>
+                            <div class="form-group full-width"><label>Residential Address</label><textarea id="student-address" rows="2" required></textarea></div>
                             
-                            <h4 style="grid-column: 1 / -1; margin-top: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Guardian Information</h4>
+                            <h4 class="full-width" style="margin-top: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Guardian Information</h4>
                             <div class="form-group"><label>Guardian Name</label><input type="text" id="student-g-name" required></div>
                             <div class="form-group"><label>Guardian Contact</label><input type="text" id="student-g-phone" placeholder="03xx-xxxxxxx" required></div>
                             
-                            <h4 style="grid-column: 1 / -1; margin-top: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Academy Status</h4>
-                            <div class="form-group" style="grid-column: 1 / -1;"><label>Status</label><select id="student-status" required><option>Active</option><option>Inactive</option></select></div>
+                            <h4 class="full-width" style="margin-top: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Academy Status</h4>
+                            <div class="form-group full-width"><label>Status</label><select id="student-status" required><option>Active</option><option>Inactive</option></select></div>
                         </div>
 
                         <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px; border-top: 1px solid var(--border); padding-top:20px;">

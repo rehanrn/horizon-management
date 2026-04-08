@@ -318,8 +318,20 @@ html.is-authenticated .login-screen { display: none; }
     box-shadow: var(--shadow-md);
     padding: 24px;
     transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
 }
-.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary), var(--primary-hover));
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); border-color: var(--primary-light); }
+.card:hover::before { opacity: 1; }
 
 /* Standardized Empty State Component */
 .no-data-msg {
@@ -441,6 +453,18 @@ html.is-authenticated .login-screen { display: none; }
 .modal-body { padding: 24px; overflow-y: auto; }
 
 /* Forms */
+.form-grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 16px;
+}
+.form-grid.two-cols {
+    grid-template-columns: 1fr 1fr;
+}
+.full-width {
+    grid-column: 1 / -1;
+}
+
 .form-group { margin-bottom: 16px; }
 .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
 .form-group input, .form-group textarea, .form-group select {
@@ -563,7 +587,7 @@ html.is-authenticated .login-screen { display: none; }
     .view-header h2 { font-size: 22px; }
 
     .dashboard-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
     .grid-cards {
@@ -571,22 +595,40 @@ html.is-authenticated .login-screen { display: none; }
     }
 
     .table-card {
+        width: 100%;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid var(--border);
+        box-shadow: none;
     }
 
     .data-table {
-        min-width: 600px;
+        min-width: 700px;
     }
 
     .modal {
         margin: 12px;
-        max-height: 85vh;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-overlay {
+        padding: 10px;
+    }
+    
+    .form-grid.two-cols {
+        grid-template-columns: 1fr; /* Stack columns on mobile */
     }
 
     .slide-panel {
         max-width: 100%;
         top: 0; right: 0; bottom: 0;
         border-radius: 0;
+    }
+    
+    .login-card {
+        padding: 40px 24px;
+        margin: 16px;
     }
 }
 
