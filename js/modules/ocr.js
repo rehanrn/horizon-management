@@ -24,7 +24,9 @@ window.handleOCRUpload = async function(event) {
             throw new Error("Tesseract.js engine not loaded yet. Please ensure internet connection.");
         }
 
-        const result = await Tesseract.recognize(file, 'eng', {
+        const worker = await Tesseract.createWorker("eng", 1, {
+            workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+            corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js',
             logger: m => {
                 // M contains status and progress
                 if (m.status === 'recognizing text') {
@@ -36,6 +38,9 @@ window.handleOCRUpload = async function(event) {
                 }
             }
         });
+
+        const result = await worker.recognize(file);
+        await worker.terminate();
 
         const text = result.data.text;
         statusText.innerText = "Extraction complete! Parsing semantics...";
