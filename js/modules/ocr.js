@@ -70,6 +70,8 @@ window.handleOCRUpload = async function(event) {
 
 function extractAndFillData(text) {
     console.log("OCR Extracted Text:\n", text);
+    
+    let fieldsFilled = 0;
 
     // Data Extraction Patterns
     const nameMatch = text.match(/(?:Name|Applicant Name|Student Name|Full Name)[\s:*-]+([A-Za-z\s]+)(?:\n|$)/i);
@@ -84,27 +86,45 @@ function extractAndFillData(text) {
         let name = nameMatch[1].trim().split('\n')[0];
         name = name.split(' ').slice(0, 3).join(' '); // prevent run-ons
         setInputAndTriggerFormatter('student-name', name);
+        fieldsFilled++;
+    } else {
+        // Smart Fallback: Find the first uppercase phrase that looks like a name
+        const lines = text.split('\n').map(l => l.trim().replace(/[^A-Za-z\s]/g, '')).filter(l => l.length > 5);
+        for(let line of lines) {
+             let words = line.split(/\s+/);
+             if(words.length >= 2 && words.length <= 4 && !/Registration|Academy|Institute|Form|School/i.test(line)) {
+                  setInputAndTriggerFormatter('student-name', line);
+                  fieldsFilled++;
+                  break;
+             }
+        }
     }
 
     if (guardianMatch && guardianMatch[1]) {
         let gName = guardianMatch[1].trim().split('\n')[0];
         gName = gName.split(' ').slice(0, 3).join(' ');
         setInputAndTriggerFormatter('student-g-name', gName);
+        fieldsFilled++;
     }
 
     if (cnicMatch && cnicMatch[1]) {
         let cnic = cnicMatch[1].replace(/[\s]/g, '-');
-        if(cnic.length >= 13) setInputAndTriggerFormatter('student-cnic', cnic);
+        if(cnic.length >= 13) {
+            setInputAndTriggerFormatter('student-cnic', cnic);
+            fieldsFilled++;
+        }
     }
 
     // Phone parsing logic
     if (allPhones.length >= 1) {
         let phone1 = allPhones[0][1].replace(/[\s-]/g, '');
         setInputAndTriggerFormatter('student-phone', phone1);
+        fieldsFilled++;
     }
     if (allPhones.length >= 2) {
         let phone2 = allPhones[1][1].replace(/[\s-]/g, '');
         setInputAndTriggerFormatter('student-g-phone', phone2);
+        fieldsFilled++;
     }
 
     if (dobMatch && dobMatch[1]) {
@@ -114,10 +134,18 @@ function extractAndFillData(text) {
             // YYYY-MM-DD
             if (parts[2].length === 4) {
                  setInputAndTriggerFormatter('student-dob', `${parts[2]}-${parts[1]}-${parts[0]}`);
+                 fieldsFilled++;
             } else if (parts[0].length === 4) {
                  setInputAndTriggerFormatter('student-dob', `${parts[0]}-${parts[1]}-${parts[2]}`);
+                 fieldsFilled++;
             }
         }
+    }
+    
+    if (fieldsFilled === 0) {
+        setTimeout(() => window.showToast("Could not confidently detect form data. Please ensure the image is clear.", "warning"), 1500);
+    } else {
+        setTimeout(() => window.showToast(`${fieldsFilled} fields extracted & auto-filled!`, "success"), 1500);
     }
 }
 
