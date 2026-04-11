@@ -124,8 +124,14 @@ function injectModals() {
         <!-- Full Detail Student Modal -->
         <div class="modal-overlay" id="student-modal">
             <div class="modal" style="max-width: 650px;">
-                <div class="modal-header">
-                    <h3>Student Details</h3>
+                <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; align-items:center; gap: 12px;">
+                        <h3>Student Details</h3>
+                        <button type="button" class="btn btn-primary" onclick="triggerOCR()" style="font-size:12px; padding:6px 12px; background:linear-gradient(135deg, var(--primary), #3b82f6); color:white; display:flex; align-items:center; gap:6px; border:none; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);">
+                            <i class="ph ph-scan"></i> Smart AI Scan
+                        </button>
+                        <input type="file" id="ocr-upload" accept="image/*" style="display:none;" onchange="handleOCRUpload(event)">
+                    </div>
                     <button class="btn-icon" onclick="closeModal('student-modal')"><i class="ph ph-x"></i></button>
                 </div>
                 <div class="modal-body">
@@ -249,6 +255,22 @@ function injectModals() {
                 <div style="display: flex; gap: 12px;">
                     <button class="btn btn-secondary" onclick="closeModal('confirm-custom-modal')" style="flex: 1; padding: 12px; font-weight: 700;">Cancel</button>
                     <button id="confirm-custom-btn" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700; background: var(--danger); border-color: var(--danger);">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- OCR Scanning Overlay -->
+        <div class="modal-overlay" id="ocr-scanning-modal">
+            <div class="modal" style="max-width: 400px; text-align: center; padding: 40px 30px; border-radius: var(--radius-lg); overflow: hidden; position: relative;">
+                <!-- Scanning animation line -->
+                <div style="position: absolute; top:0; left:-100%; width: 50%; height: 4px; background: var(--primary); animation: scanLine 1.5s infinite linear; box-shadow: 0 0 10px var(--primary);"></div>
+                <div id="ocr-scanning-icon" style="font-size: 60px; margin-bottom: 20px; color: var(--primary); animation: pulse 1.5s infinite;">
+                    <i class="ph ph-aperture"></i>
+                </div>
+                <h3 style="font-size: 22px; font-weight: 800; color: var(--text-strong); margin-bottom: 12px;">AI Document Analysis</h3>
+                <p id="ocr-status-text" style="color: var(--text-muted); line-height: 1.6; font-size: 15px; margin-bottom: 0;">Initializing neural engine...</p>
+                <div style="width: 100%; height: 6px; background: var(--border); border-radius: 4px; margin-top:24px; overflow:hidden;">
+                    <div id="ocr-progress-bar" style="height: 100%; width: 0%; background: linear-gradient(135deg, var(--primary), #3b82f6); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);"></div>
                 </div>
             </div>
         </div>
