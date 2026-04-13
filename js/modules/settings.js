@@ -20,6 +20,19 @@ window.renderSettings = function() {
                 <button class="btn btn-primary" onclick="window.showToast('Branding updated in local session', 'success')" style="width:100%; margin-top:10px;">Update Brand</button>
             </div>
 
+            <!-- Security Settings -->
+            <div class="card">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+                    <i class="ph ph-lock-key" style="font-size:24px; color:var(--primary);"></i>
+                    <h3 style="font-size:16px;">Security</h3>
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="setting-password" placeholder="Enter new password">
+                </div>
+                <button class="btn btn-primary" onclick="changeAdminPassword()" style="width:100%; margin-top:10px;">Update Password</button>
+            </div>
+
             <!-- Database Lifeboat -->
             <div class="card">
                 <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
@@ -90,6 +103,24 @@ window.triggerReset = function() {
             Store.clearAll();
             window.showToast("System Reset Complete", "success");
             setTimeout(() => window.location.reload(), 1000);
+        }
+    );
+}
+
+window.changeAdminPassword = function() {
+    const newPass = document.getElementById('setting-password').value;
+    if (!newPass || newPass.trim() === '') {
+        window.showToast("Password cannot be empty", "error");
+        return;
+    }
+    
+    window.confirmCustom(
+        "Update Password?", 
+        "Are you sure you want to change the admin password?", 
+        () => {
+            localStorage.setItem('academy_auth_pass', newPass);
+            document.getElementById('setting-password').value = '';
+            window.showToast("Password Updated Successfully!", "success");
         }
     );
 }

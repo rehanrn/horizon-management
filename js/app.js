@@ -98,6 +98,10 @@ window.closeModal = function(modalId) {
     const form = document.querySelector(`#${modalId} form`);
     if(form) form.reset();
     
+    // Clear avatar preview specifically
+    const avatarPreview = document.getElementById('avatar-preview');
+    if(avatarPreview) avatarPreview.innerHTML = '<i class="ph ph-user" style="font-size:24px; color:var(--text-muted);"></i>';
+
     const hiddenInputs = document.querySelectorAll(`#${modalId} input[type="hidden"]`);
     hiddenInputs.forEach(i => i.value = '');
 }
@@ -118,6 +122,19 @@ window.toggleSidebar = function() {
     overlay.classList.toggle('active');
 }
 
+window.handleAvatarUpload = function(event) {
+    const file = event.target.files[0];
+    if(!file) return;
+    
+    // Convert to Base64 natively
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('student-avatar-data').value = e.target.result;
+        document.getElementById('avatar-preview').innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+    };
+    reader.readAsDataURL(file);
+}
+
 function injectModals() {
     const container = document.getElementById('modal-container');
     container.innerHTML = `
@@ -127,10 +144,6 @@ function injectModals() {
                 <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
                     <div style="display:flex; align-items:center; gap: 12px;">
                         <h3>Student Details</h3>
-                        <button type="button" class="btn btn-primary" onclick="triggerOCR()" style="font-size:12px; padding:6px 12px; background:linear-gradient(135deg, var(--primary), #3b82f6); color:white; display:flex; align-items:center; gap:6px; border:none; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);">
-                            <i class="ph ph-scan"></i> Smart AI Scan
-                        </button>
-                        <input type="file" id="ocr-upload" accept="image/*" style="display:none;" onchange="handleOCRUpload(event)">
                     </div>
                     <button class="btn-icon" onclick="closeModal('student-modal')"><i class="ph ph-x"></i></button>
                 </div>
@@ -139,19 +152,44 @@ function injectModals() {
                         <input type="hidden" id="student-id">
                         
                         <div class="form-grid two-cols">
-                            <div class="form-group full-width"><label>Full Name</label><input type="text" id="student-name" required></div>
-                            <div class="form-group"><label>Date of Birth</label><input type="date" id="student-dob" required></div>
-                            <div class="form-group"><label>Gender</label><select id="student-gender" required><option>Male</option><option>Female</option><option>Other</option></select></div>
-                            <div class="form-group"><label>CNIC Number</label><input type="text" id="student-cnic" placeholder="xxxxx-xxxxxxx-x"></div>
-                            <div class="form-group"><label>Personal Phone</label><input type="text" id="student-phone" placeholder="03xx-xxxxxxx" required></div>
+                            <!-- 1. Serial / Header Info -->
+                            <div class="form-group"><label>Serial # <i>(Optional)</i></label><input type="text" id="student-serial" placeholder="Serial No"></div>
                             <div class="form-group"><label>Course Enrolled</label><select id="student-course" required></select></div>
-                            <div class="form-group full-width"><label>Residential Address</label><textarea id="student-address" rows="2" required></textarea></div>
+
+                            <!-- 2. Personal Information -->
+                            <h4 class="full-width" style="margin-top: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Personal Data</h4>
                             
-                            <h4 class="full-width" style="margin-top: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Guardian Information</h4>
-                            <div class="form-group"><label>Guardian Name</label><input type="text" id="student-g-name" required></div>
-                            <div class="form-group"><label>Guardian Contact</label><input type="text" id="student-g-phone" placeholder="03xx-xxxxxxx" required></div>
+                            <div class="form-group full-width" style="display:flex; align-items:center; gap:16px;">
+                                <div id="avatar-preview" style="width: 64px; height: 64px; border-radius:12px; background:var(--bg-surface-alt); border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                    <i class="ph ph-user" style="font-size:24px; color:var(--text-muted);"></i>
+                                </div>
+                                <div style="flex:1;">
+                                    <label>Student Photograph <i>(Optional)</i></label>
+                                    <input type="file" id="student-avatar" accept="image/*" onchange="handleAvatarUpload(event)" style="border:none; padding:0;">
+                                    <input type="hidden" id="student-avatar-data">
+                                </div>
+                            </div>
                             
-                            <h4 class="full-width" style="margin-top: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Academy Status</h4>
+                            <div class="form-group"><label>Student Name</label><input type="text" id="student-name" required></div>
+                            <div class="form-group"><label>Father Name</label><input type="text" id="student-g-name" required></div>
+                            
+                            <div class="form-group"><label>Date of Birth</label><input type="date" id="student-dob" required></div>
+                            <div class="form-group"><label>Gender</label><select id="student-gender" required><option>Male</option><option>Female</option></select></div>
+                            
+                            <div class="form-group"><label>Address</label><input type="text" id="student-address"></div>
+                            <div class="form-group"><label>CNIC Number <i>(Optional)</i></label><input type="text" id="student-cnic" placeholder="xxxxx-xxxxxxx-x"></div>
+                            
+                            <div class="form-group"><label>P. Contact (Personal) <i>(Optional)</i></label><input type="text" id="student-phone" placeholder="03xx-xxxxxxx"></div>
+                            <div class="form-group"><label>Father Contact <i>(Optional)</i></label><input type="text" id="student-g-phone" placeholder="03xx-xxxxxxx"></div>
+                            
+                            <div class="form-group"><label>Graduated</label><select id="student-graduated"><option>NO</option><option>YES</option></select></div>
+                            <div class="form-group"><label>Graduation (Degree) <i>(Optional)</i></label><input type="text" id="student-graduation-info" placeholder="Degree Name"></div>
+
+                            <!-- 3. Office Works Section -->
+                            <h4 class="full-width" style="margin-top: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Office Works</h4>
+                            <div class="form-group"><label>Class Time (C/Time)</label><input type="text" id="student-class-time" placeholder="e.g. 9 To 11 AM"></div>
+                            <div class="form-group"><label>Class Duration</label><input type="text" id="student-class-duration" placeholder="e.g. 6 Months"></div>
+                            
                             <div class="form-group full-width"><label>Status</label><select id="student-status" required><option>Active</option><option>Inactive</option></select></div>
                         </div>
 
@@ -259,25 +297,11 @@ function injectModals() {
             </div>
         </div>
 
-        <!-- OCR Scanning Overlay -->
-        <div class="modal-overlay" id="ocr-scanning-modal">
-            <div class="modal" style="max-width: 400px; text-align: center; padding: 40px 30px; border-radius: var(--radius-lg); overflow: hidden; position: relative;">
-                <!-- Scanning animation line -->
-                <div style="position: absolute; top:0; left:-100%; width: 50%; height: 4px; background: var(--primary); animation: scanLine 1.5s infinite linear; box-shadow: 0 0 10px var(--primary);"></div>
-                <div id="ocr-scanning-icon" style="font-size: 60px; margin-bottom: 20px; color: var(--primary); animation: pulse 1.5s infinite;">
-                    <i class="ph ph-aperture"></i>
-                </div>
-                <h3 style="font-size: 22px; font-weight: 800; color: var(--text-strong); margin-bottom: 12px;">AI Document Analysis</h3>
-                <p id="ocr-status-text" style="color: var(--text-muted); line-height: 1.6; font-size: 15px; margin-bottom: 0;">Initializing neural engine...</p>
-                <div style="width: 100%; height: 6px; background: var(--border); border-radius: 4px; margin-top:24px; overflow:hidden;">
-                    <div id="ocr-progress-bar" style="height: 100%; width: 0%; background: linear-gradient(135deg, var(--primary), #3b82f6); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);"></div>
-                </div>
-            </div>
-        </div>
+
     `;
 
     setTimeout(() => {
-        document.getElementById('student-form').addEventListener('submit', (e) => {
+        document.getElementById('student-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('student-id').value;
             const cnicValue = document.getElementById('student-cnic').value;
@@ -309,6 +333,8 @@ function injectModals() {
             }
 
             const payload = {
+                serialNo: document.getElementById('student-serial').value,
+                avatarString: document.getElementById('student-avatar-data').value,
                 name: document.getElementById('student-name').value,
                 cnic: cnicValue,
                 dob: document.getElementById('student-dob').value,
@@ -318,6 +344,10 @@ function injectModals() {
                 address: document.getElementById('student-address').value,
                 guardianName: document.getElementById('student-g-name').value,
                 guardianPhone: document.getElementById('student-g-phone').value,
+                isGraduated: document.getElementById('student-graduated').value,
+                graduationInfo: document.getElementById('student-graduation-info').value,
+                classTime: document.getElementById('student-class-time').value,
+                classDuration: document.getElementById('student-class-duration').value,
                 status: document.getElementById('student-status').value,
             };
             if(!payload.joinDate) payload.joinDate = new Date().toISOString().split('T')[0];
@@ -342,13 +372,31 @@ function injectModals() {
                  }, 1500);
             }
 
-            id ? Store.update('students', id, payload) : Store.add('students', payload);
-            
-            // Fixed Success Toast Logic
+            let savedStudent;
             if(id) {
+                Store.update('students', id, payload);
+                savedStudent = Store.getById('students', id);
                 window.showToast("Student Profile Updated", "success");
             } else {
+                savedStudent = Store.add('students', payload);
                 window.showToast("Student Registered Successfully!", "success");
+                // Immediately generate automated PDF form for the newly created student record
+                if (window.PDFEngine) {
+                    window.PDFEngine.generateAdmissionForm(savedStudent, false).then(pdfBlob => {
+                        if (pdfBlob) {
+                            // Convert blob to base64 for storage
+                            const reader = new FileReader();
+                            reader.onload = function() {
+                                const base64String = reader.result;
+                                // Update the student record with the PDF data
+                                Store.update('students', savedStudent.id, { admissionFormPdf: base64String });
+                            };
+                            reader.readAsDataURL(pdfBlob);
+                        }
+                    }).catch(error => {
+                        console.error("Failed to generate PDF for storage:", error);
+                    });
+                }
             }
             
             closeModal('student-modal'); 

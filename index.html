@@ -19,10 +19,10 @@
     <!-- Login Portal Overlay -->
     <div class="login-screen" id="login-screen">
         <div class="login-card">
-            <div class="logo-container" style="width: 70px; height: 70px; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-md); border: 2px solid var(--primary-light); margin: 0 auto 24px auto;">
-                <img src="Icon/WhatsApp Image 2026-04-06 at 12.11.44 AM.jpeg" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+            <div class="logo-container login-logo">
+                <img src="Icon/WhatsApp Image 2026-04-06 at 12.11.44 AM.jpeg" alt="Logo">
             </div>
-            <h1 style="font-size: 22px;">THE HORIZON INSTITUTE & SOFTWARE HOUSE</h1>
+            <h1>THE HORIZON INSTITUTE & SOFTWARE HOUSE</h1>
             <p>Authorized personnel only. Please sign in.</p>
             <form class="login-form" id="login-form">
                 <div class="form-group">
@@ -44,40 +44,40 @@
     <div class="app-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header" style="height: auto; padding: 30px 24px; flex-direction: column; align-items: flex-start; gap: 16px; position: relative;">
-                <button class="mobile-close-btn" onclick="toggleSidebar()" style="position: absolute; right: 16px; top: 16px; display: none; background:transparent; border:none; color:var(--text-muted); font-size:24px; cursor:pointer;"><i class="ph ph-x"></i></button>
-                <div class="logo-container" style="width: 60px; height: 60px; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 2px solid var(--primary-light);">
-                    <img src="Icon/WhatsApp Image 2026-04-06 at 12.11.44 AM.jpeg" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+            <div class="sidebar-header">
+                <button class="mobile-close-btn" onclick="toggleSidebar()"><i class="ph ph-x"></i></button>
+                <div class="logo-container sidebar-logo">
+                    <img src="Icon/WhatsApp Image 2026-04-06 at 12.11.44 AM.jpeg" alt="Logo">
                 </div>
                 <div>
-                    <h2 style="font-size: 14px; color: var(--text-strong); font-weight: 800; letter-spacing: -0.5px; line-height: 1.2;">THE HORIZON INSTITUTE & SOFTWARE HOUSE</h2>
-                    <p style="font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">Management System</p>
+                    <h2>THE HORIZON INSTITUTE</h2>
+                    <p>Management System</p>
                 </div>
             </div>
             <nav class="nav-menu">
                 <button class="nav-btn active" data-target="dashboard">
-                    <i class="ph ph-squares-four" style="font-size: 20px;"></i> Dashboard
+                    <i class="ph ph-squares-four"></i> Dashboard
                 </button>
                 <button class="nav-btn" data-target="students">
-                    <i class="ph ph-users" style="font-size: 20px;"></i> Students
+                    <i class="ph ph-users"></i> Students
                 </button>
                 <button class="nav-btn" data-target="teachers">
-                    <i class="ph ph-chalkboard-teacher" style="font-size: 20px;"></i> Teachers
+                    <i class="ph ph-chalkboard-teacher"></i> Teachers
                 </button>
                 <button class="nav-btn" data-target="courses">
-                    <i class="ph ph-books" style="font-size: 20px;"></i> Courses
+                    <i class="ph ph-books"></i> Courses
                 </button>
                 <button class="nav-btn" data-target="fees">
-                    <i class="ph ph-wallet" style="font-size: 20px;"></i> Fees
+                    <i class="ph ph-wallet"></i> Fees
                 </button>
                 <button class="nav-btn" data-target="settings">
-                    <i class="ph ph-gear-six" style="font-size: 20px;"></i> Settings
+                    <i class="ph ph-gear-six"></i> Settings
                 </button>
             </nav>
 
-            <div class="sidebar-footer" style="margin-top: auto; padding: 20px 16px; border-top: 1px solid var(--border);">
-                <button class="nav-btn logout-btn" onclick="logout()" style="color: var(--danger); width: 100%; border: 1px solid transparent; transition: all 0.3s ease;">
-                    <i class="ph ph-sign-out" style="font-size: 20px;"></i> Sign Out
+            <div class="sidebar-footer">
+                <button class="nav-btn logout-btn" onclick="logout()">
+                    <i class="ph ph-sign-out"></i> Sign Out
                 </button>
             </div>
         </aside>
@@ -85,9 +85,9 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="top-header">
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <button class="mobile-menu-btn" onclick="toggleSidebar()" style="display: none; background: var(--bg-surface-solid); border: 1px solid var(--border); width: 44px; height: 44px; border-radius: 12px; cursor: pointer; color: var(--text-strong); font-size: 24px; align-items: center; justify-content: center; box-shadow: var(--shadow-sm);"><i class="ph ph-list"></i></button>
-                    <h1 id="page-title" style="font-size: 20px; font-weight: 800; color: var(--text-strong); letter-spacing: -0.5px;">Dashboard</h1>
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="ph ph-list"></i></button>
+                    <h1 id="page-title">Dashboard</h1>
                 </div>
                 
                 <div class="header-search">
@@ -133,12 +133,11 @@
     <!-- Modals Overlay -->
     <div id="modal-container">
         <!-- Modals injected dynamically for cleaner HTML -->
-    </div>
-
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
     <script src="js/store.js"></script>
     <script src="js/modules/auth.js"></script>
+    <script src="js/modules/pdfGenerator.js"></script>
     <script src="js/app.js"></script>
     <script src="js/modules/dashboard.js"></script>
     <script src="js/modules/students.js"></script>
@@ -147,6 +146,5 @@
     <script src="js/modules/attendance.js"></script>
     <script src="js/modules/fees.js"></script>
     <script src="js/modules/settings.js"></script>
-    <script src="js/modules/ocr.js"></script>
 </body>
 </html>

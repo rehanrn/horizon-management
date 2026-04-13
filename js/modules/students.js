@@ -100,9 +100,12 @@ window.refreshStudentTable = function(textFilter = '', courseFilter = '') {
         return `
         <tr onclick="viewStudentProfile('${student.id}')">
             <td style="display:flex; align-items:center; gap: 12px;">
-                <div style="width: 38px; height: 38px; border-radius: 8px; background: var(--primary-light); color: var(--primary); display:flex; align-items:center; justify-content:center; font-weight: 700; font-size:16px;">
-                    ${student.name.charAt(0)}
-                </div>
+                ${student.avatarString ? 
+                    `<img src="${student.avatarString}" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; box-shadow: var(--shadow-sm);">` : 
+                    `<div style="width: 38px; height: 38px; border-radius: 8px; background: var(--primary-light); color: var(--primary); display:flex; align-items:center; justify-content:center; font-weight: 700; font-size:16px;">
+                        ${student.name.charAt(0)}
+                    </div>`
+                }
                 <div style="display:flex; flex-direction:column; gap:2px;">
                     <span style="font-weight: 600; color: var(--text-strong);">${student.name}</span>
                     <span style="font-size: 12px; color: var(--text-muted);">Joined ${student.joinDate || '-'}</span>
@@ -134,6 +137,7 @@ window.editStudent = function(id) {
     document.getElementById('student-course').innerHTML = courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
 
     document.getElementById('student-id').value = student.id;
+    document.getElementById('student-serial').value = student.serialNo || '';
     document.getElementById('student-name').value = student.name;
     document.getElementById('student-cnic').value = student.cnic || '';
     document.getElementById('student-dob').value = student.dob || '';
@@ -143,7 +147,20 @@ window.editStudent = function(id) {
     document.getElementById('student-address').value = student.address || '';
     document.getElementById('student-g-name').value = student.guardianName || '';
     document.getElementById('student-g-phone').value = student.guardianPhone || '';
+    document.getElementById('student-graduated').value = student.isGraduated || 'NO';
+    document.getElementById('student-graduation-info').value = student.graduationInfo || '';
+    document.getElementById('student-class-time').value = student.classTime || '';
+    document.getElementById('student-class-duration').value = student.classDuration || '';
     document.getElementById('student-status').value = student.status;
+
+    // Load avatar preview if exists
+    if (student.avatarString) {
+        document.getElementById('student-avatar-data').value = student.avatarString;
+        document.getElementById('avatar-preview').innerHTML = `<img src="${student.avatarString}" style="width:100%; height:100%; object-fit:cover;">`;
+    } else {
+        document.getElementById('student-avatar-data').value = '';
+        document.getElementById('avatar-preview').innerHTML = '<i class="ph ph-user" style="font-size:24px; color:var(--text-muted);"></i>';
+    }
 
     openModal('student-modal');
 }
@@ -158,6 +175,20 @@ window.deleteStudent = function(id) {
             window.showToast("Student deleted successfully", "success");
         }
     );
+}
+
+window.viewAdmissionForm = function(id) {
+    const student = Store.getById('students', id);
+    if (!student) return;
+
+    if (student.admissionFormPdf) {
+        // Open the stored PDF
+        window.open(student.admissionFormPdf, '_blank');
+    } else {
+        // Fallback: generate PDF on-demand
+        window.showToast("Generating PDF Form...", "info");
+        window.PDFEngine.generateAdmissionForm(student, true);
+    }
 }
 
 window.viewStudentProfile = function(id) {
@@ -211,14 +242,18 @@ window.viewStudentProfile = function(id) {
 
     const html = `
         <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom:24px;">
-            <div class="profile-avatar-large" style="width: 96px; height: 96px; border-radius: 20px; font-size: 32px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);">
-                ${student.name.charAt(0)}
-            </div>
+            ${student.avatarString ? 
+                `<img src="${student.avatarString}" style="width: 96px; height: 96px; border-radius: 20px; object-fit: cover; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">` :
+                `<div class="profile-avatar-large" style="width: 96px; height: 96px; border-radius: 20px; font-size: 32px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white; display:flex; align-items:center; justify-content:center; box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);">
+                    ${student.name.charAt(0)}
+                </div>`
+            }
             <h2 style="font-size:26px; font-weight:800; margin-top: 16px; color: var(--text-strong); letter-spacing:-0.5px">${student.name}</h2>
-            <div style="display:flex; gap: 8px; margin-top:12px">
+            <div style="display:flex; gap: 8px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
                 <span class="badge ${student.status==='Active' ? 'success' : 'danger'}">${student.status}</span>
                 <span class="badge primary">${courseName}</span>
                 <span class="badge warning" style="text-transform:none;"><i class="ph ph-clock"></i> Active: ${lastActiveDisplay}</span>
+                <button class="btn btn-secondary" style="padding:4px 12px; font-size:12px; height:auto; margin-left: 8px;" onclick="viewAdmissionForm('${student.id}')"><i class="ph ph-printer"></i> View Admission Form</button>
             </div>
         </div>
         
@@ -227,15 +262,25 @@ window.viewStudentProfile = function(id) {
             <div class="profile-field"><label>Date of Birth</label><p>${student.dob || '-'}</p></div>
             <div class="profile-field"><label>Gender</label><p>${student.gender || '-'}</p></div>
             <div class="profile-field" style="grid-column: 1 / -1;"><label>CNIC Number</label><p style="font-family: monospace; font-size:15px; letter-spacing:0.5px; color:var(--primary); font-weight:700;">${student.cnic || 'Not Provided'}</p></div>
-            <div class="profile-field"><label>Personal Phone</label><p>${student.phone || '-'}</p></div>
+            <div class="profile-field"><label>Personal Phone (SIM)</label><p>${student.phone || '-'}</p></div>
             <div class="profile-field"><label>Enrollment Date</label><p>${student.joinDate || '-'}</p></div>
+            <div class="profile-field"><label>Graduated</label><p>${student.isGraduated || 'NO'}</p></div>
+            <div class="profile-field"><label>Degree / Education</label><p>${student.graduationInfo || '-'}</p></div>
             <div class="profile-field" style="grid-column: 1 / -1;"><label>Residential Address</label><p style="line-height:1.5">${student.address || '-'}</p></div>
         </div>
 
         <h4 style="font-size: 12px; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:16px;">Guardian Connections</h4>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; background: var(--bg-hover); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
-            <div class="profile-field" style="margin:0;"><label>Guardian Name</label><p>${student.guardianName || '-'}</p></div>
-            <div class="profile-field" style="margin:0;"><label>Emergency Contact</label><p>${student.guardianPhone || '-'}</p></div>
+            <div class="profile-field" style="margin:0;"><label>Father Name</label><p>${student.guardianName || '-'}</p></div>
+            <div class="profile-field" style="margin:0;"><label>Father Contact</label><p>${student.guardianPhone || '-'}</p></div>
+        </div>
+
+        <h4 style="font-size: 12px; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:16px;">Office Works</h4>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; padding: 16px; border-radius: var(--radius-md); border: 1px dashed var(--border);">
+            <div class="profile-field" style="margin:0;"><label>Serial Number</label><p style="font-family: monospace; font-weight:600; color:var(--primary);">${student.serialNo || 'N/A'}</p></div>
+            <div class="profile-field" style="margin:0;"><label>Class Time</label><p>${student.classTime || '-'}</p></div>
+            <div class="profile-field" style="margin:0;"><label>Duration</label><p>${student.classDuration || '-'}</p></div>
+            <div class="profile-field" style="margin:0;"><label>Course</label><p>${courseName}</p></div>
         </div>
 
         <h4 style="font-size: 12px; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:16px;">Performance & Accounts</h4>

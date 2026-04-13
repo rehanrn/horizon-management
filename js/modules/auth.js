@@ -4,7 +4,7 @@ const Auth = {
     // For this local-first standalone system, we use a simple credential check.
     credentials: {
         user: 'admin',
-        pass: 'admin123'
+        get pass() { return localStorage.getItem('academy_auth_pass') || 'admin123'; }
     },
 
     init() {
